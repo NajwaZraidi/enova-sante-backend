@@ -9,6 +9,10 @@ import com.enova.enovasantebackend.repository.CategorieDocumentRepository;
 import com.enova.enovasantebackend.service.CategorieDocumentService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,5 +50,20 @@ public class CategorieDocumentServiceImpl implements CategorieDocumentService {
     @Override
     public void delete(String id) {
         categorieDocumentRepository.deleteById(id);
+    }
+
+    @Override
+    public List<DTOCategorieDocumentResponse> getByCode(String code) {
+        return categorieDocumentRepository.findCategorieDocumentsByCode(code).stream().map(categorieDocumentMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategorieDocument> getBySpecification(Specification<CategorieDocument> specification) {
+        return categorieDocumentRepository.findAll(specification);
+    }
+
+    @Override
+    public Page<DTOCategorieDocumentResponse> getPage(Pageable page) {
+        return categorieDocumentRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize())).map(categorieDocumentMapper::toResponse);
     }
 }

@@ -18,24 +18,4 @@ public class EnovaSanteBackendApplication {
         SpringApplication.run(EnovaSanteBackendApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner start(CategorieDocumentService service) {
-        return args -> {
-            DTOCategorieDocumentRequest save = DTOCategorieDocumentRequest.builder()
-                    .code("code test")
-                    .description("description test")
-                    .ordre(5)
-                    .actif(false)
-                    .hl7("hl7 test")
-                    .libelle("Libelle test")
-                    .build();
-
-            service.save(save);
-            Scanner sc = new Scanner(System.in);
-            System.out.print("Enter the id: ");
-            String id = sc.nextLine();
-            System.out.println("Entered ID: " + id);
-            service.delete(id);
-        };
-    }
 }
