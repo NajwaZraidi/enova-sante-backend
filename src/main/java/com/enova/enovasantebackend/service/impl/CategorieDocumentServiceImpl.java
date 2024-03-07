@@ -1,8 +1,8 @@
 package com.enova.enovasantebackend.service.impl;
 
 import com.enova.enovasantebackend.domain.CategorieDocument;
-import com.enova.enovasantebackend.dto.DTOCategorieDocumentRequest;
-import com.enova.enovasantebackend.dto.DTOCategorieDocumentResponse;
+import com.enova.enovasantebackend.dto.CategorieDocumentRequestDTO;
+import com.enova.enovasantebackend.dto.CategorieDocumentResponseDTO;
 import com.enova.enovasantebackend.exception.CategorieDocumentNotFoundException;
 import com.enova.enovasantebackend.mapper.CategorieDocumentMapper;
 import com.enova.enovasantebackend.repository.CategorieDocumentRepository;
@@ -25,23 +25,23 @@ public class CategorieDocumentServiceImpl implements CategorieDocumentService {
     CategorieDocumentMapper categorieDocumentMapper;
 
     @Override
-    public List<DTOCategorieDocumentResponse> getAll() {
+    public List<CategorieDocumentResponseDTO> getAll() {
         return categorieDocumentRepository.findAll().stream().map(categorieDocumentMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
-    public DTOCategorieDocumentResponse getById(String id) throws CategorieDocumentNotFoundException {
+    public CategorieDocumentResponseDTO getById(String id) throws CategorieDocumentNotFoundException {
         return categorieDocumentMapper.toResponse(categorieDocumentRepository.findById(id).orElseThrow(() -> new CategorieDocumentNotFoundException("The CategorieDocument of the id " + id + "is not found")));
     }
 
     @Override
-    public DTOCategorieDocumentResponse save(DTOCategorieDocumentRequest request) {
+    public CategorieDocumentResponseDTO save(CategorieDocumentRequestDTO request) {
         CategorieDocument save = categorieDocumentRepository.save(categorieDocumentMapper.toEntity(request));
         return categorieDocumentMapper.toResponse(save);
     }
 
     @Override
-    public DTOCategorieDocumentResponse update(DTOCategorieDocumentRequest request, String id) {
+    public CategorieDocumentResponseDTO update(CategorieDocumentRequestDTO request, String id) {
         CategorieDocument entity = categorieDocumentRepository.findById(id).get();
         BeanUtils.copyProperties(request, entity);
         return categorieDocumentMapper.toResponse(categorieDocumentRepository.save(entity));
@@ -53,17 +53,17 @@ public class CategorieDocumentServiceImpl implements CategorieDocumentService {
     }
 
     @Override
-    public List<DTOCategorieDocumentResponse> getByCode(String code) {
+    public List<CategorieDocumentResponseDTO> getByCode(String code) {
         return categorieDocumentRepository.findCategorieDocumentsByCode(code).stream().map(categorieDocumentMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
-    public List<CategorieDocument> getBySpecification(Specification<CategorieDocument> specification) {
-        return categorieDocumentRepository.findAll(specification);
+    public Page<CategorieDocument> getBySpecification(Specification<CategorieDocument> specification, Pageable pageable) {
+        return categorieDocumentRepository.findAll(specification, pageable);
     }
 
     @Override
-    public Page<DTOCategorieDocumentResponse> getPage(Pageable page) {
-        return categorieDocumentRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize())).map(categorieDocumentMapper::toResponse);
+    public Page<CategorieDocumentResponseDTO> getPage(Pageable page) {
+        return categorieDocumentRepository.findAll(page).map(categorieDocumentMapper::toResponse);
     }
 }
