@@ -1,15 +1,21 @@
 package com.enova.enovasantebackend.controller;
 
+import com.enova.enovasantebackend.domain.CategorieDocument;
 import com.enova.enovasantebackend.dto.CategorieDocumentRequestDTO;
 import com.enova.enovasantebackend.dto.CategorieDocumentResponseDTO;
 import com.enova.enovasantebackend.enums.GlobalOperator;
 import com.enova.enovasantebackend.repository.criteria.CriteriaDTO;
+import com.enova.enovasantebackend.repository.criteria.PageRequestDTO;
 import com.enova.enovasantebackend.repository.criteria.SearchCriteriaDTO;
 import com.enova.enovasantebackend.exception.CategorieDocumentNotFoundException;
 import com.enova.enovasantebackend.repository.CategorieDocumentRepository;
 import com.enova.enovasantebackend.service.CategorieDocumentService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.beans.support.PropertyComparator;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +35,9 @@ public class CategorieDocumentController {
         return ResponseEntity.ok(categorieDocumentService.getAll());
     }
 
-    @PostMapping("all")
-    public ResponseEntity<Page<CategorieDocumentResponseDTO>> getAllD(@RequestParam(name="page",defaultValue = "0")  int page, @RequestParam(name="size",defaultValue = "5") int size) {
-        return ResponseEntity.ok(categorieDocumentService.getAllDocumentCategorie(page,size));
+    @PostMapping("page")
+    public ResponseEntity<Page<CategorieDocumentResponseDTO>> getAllCategoriesPaginitation(@RequestBody PageRequestDTO pageRequestDTO) {
+        return ResponseEntity.ok(categorieDocumentService.getAllDocumentCategorie(pageRequestDTO));
     }
 
     // Get entity 'CategorieDocument' by id
@@ -66,7 +72,13 @@ public class CategorieDocumentController {
 
     CategorieDocumentRepository repository;
     @PostMapping("specifications")
-    public ResponseEntity<List<CategorieDocumentResponseDTO>> getCategories(@RequestBody CriteriaDTO criteriaDTO){
-        return ResponseEntity.ok(categorieDocumentService.getCategoriesByCriteria(criteriaDTO.getSearchCriteriaDTO(),criteriaDTO.getGlobalOperator()));
+    public ResponseEntity<Page<CategorieDocumentResponseDTO>> getCategories(@RequestBody(required = false) CriteriaDTO criteriaDTO){
+        if(criteriaDTO==null){
+             criteriaDTO=new CriteriaDTO();
+        }
+         return ResponseEntity.ok(categorieDocumentService.getCategoriesByCriteria(criteriaDTO.getSearchCriteriaDTO(),criteriaDTO.getGlobalOperator(),criteriaDTO.getPageRequestDTO()));
     }
+
+
+
 }

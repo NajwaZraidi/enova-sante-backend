@@ -1,6 +1,7 @@
 package com.enova.enovasantebackend.service;
 
 import com.enova.enovasantebackend.enums.GlobalOperator;
+import com.enova.enovasantebackend.repository.criteria.PageRequestDTO;
 import com.enova.enovasantebackend.repository.criteria.SearchCriteriaDTO;
 import com.enova.enovasantebackend.dto.CategorieDocumentRequestDTO;
 import com.enova.enovasantebackend.dto.CategorieDocumentResponseDTO;
@@ -27,13 +28,13 @@ public interface CategorieDocumentService {
     // Remove an entity 'CategorieDocument'
     void delete(String id);
 
-    Page<CategorieDocumentResponseDTO> getAllDocumentCategorie(int page, int size);
+    Page<CategorieDocumentResponseDTO> getAllDocumentCategorie(PageRequestDTO pageRequestDTO);
 
     //Query Model
     CategorieDocumentResponseDTO getCategorieByCode(String code);
 
-    //specifications
-    List<CategorieDocumentResponseDTO> getCategoriesByCriteria(List<SearchCriteriaDTO> searchCriteriaDTO, GlobalOperator operator);
+    //specifications && pagination
+    Page<CategorieDocumentResponseDTO> getCategoriesByCriteria(List<SearchCriteriaDTO> searchCriteriaDTO, GlobalOperator operator,PageRequestDTO requestDTO);
 
 
 }

@@ -1,12 +1,18 @@
 package com.enova.enovasantebackend.repository.criteria;
 
 import com.enova.enovasantebackend.enums.GlobalOperator;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class CriteriaDTO {
-    List<SearchCriteriaDTO> searchCriteriaDTO;
+    List<SearchCriteriaDTO> searchCriteriaDTO=new ArrayList<>();
     GlobalOperator globalOperator=GlobalOperator.AND;
+   PageRequestDTO pageRequestDTO=new PageRequestDTO();
 }

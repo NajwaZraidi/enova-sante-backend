@@ -1,6 +1,7 @@
 package com.enova.enovasantebackend.service.impl;
 
 import com.enova.enovasantebackend.enums.GlobalOperator;
+import com.enova.enovasantebackend.repository.criteria.PageRequestDTO;
 import com.enova.enovasantebackend.repository.criteria.SearchCriteriaDTO;
 import com.enova.enovasantebackend.domain.CategorieDocument;
 import com.enova.enovasantebackend.dto.CategorieDocumentRequestDTO;
@@ -18,6 +19,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -59,8 +61,9 @@ public class CategorieDocumentServiceImpl implements CategorieDocumentService {
     }
 
     @Override
-    public Page<CategorieDocumentResponseDTO> getAllDocumentCategorie(int page, int size) {
-        return categorieDocumentRepository.findAll(PageRequest.of(page, size)).map(categorieDocumentMapper::toResponse);
+    public Page<CategorieDocumentResponseDTO> getAllDocumentCategorie(PageRequestDTO pageRequestDTO) {
+        Pageable pageable= new PageRequestDTO().getPageable(pageRequestDTO);
+        return categorieDocumentRepository.findAll(pageable).map(categorieDocumentMapper::toResponse);
     }
 
     @Override
@@ -71,9 +74,10 @@ public class CategorieDocumentServiceImpl implements CategorieDocumentService {
 
 
     @Override
-    public List<CategorieDocumentResponseDTO> getCategoriesByCriteria(List<SearchCriteriaDTO> searchCriteriaDTO, GlobalOperator operator) {
-            Specification<CategorieDocument> specification= CategorieFilterSpecification.getSearchSpecification(searchCriteriaDTO,operator);
-            return categorieDocumentRepository.findAll(specification).stream().map(categorieDocumentMapper::toResponse).collect(Collectors.toList());
+    public Page<CategorieDocumentResponseDTO> getCategoriesByCriteria(List<SearchCriteriaDTO> searchCriteriaDTO, GlobalOperator operator,PageRequestDTO pageRequestDTO) {
+        Specification<CategorieDocument> specification= CategorieFilterSpecification.getSearchSpecification(searchCriteriaDTO,operator);
+        Pageable pageable = new PageRequestDTO().getPageable(pageRequestDTO);
+        return categorieDocumentRepository.findAll(specification,pageable).map(categorieDocumentMapper::toResponse);
     }
 
 
