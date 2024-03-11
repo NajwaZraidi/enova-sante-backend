@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DTOCategorieDocumentResponse {
-    private String id;
+public class CategorieDocumentRequestDTO {
     private String code;
     private String libelle;
     private String description;

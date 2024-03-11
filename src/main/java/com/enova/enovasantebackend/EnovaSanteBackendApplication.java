@@ -1,8 +1,6 @@
 package com.enova.enovasantebackend;
 
-import com.enova.enovasantebackend.domain.CategorieDocument;
-import com.enova.enovasantebackend.dto.DTOCategorieDocumentRequest;
-import com.enova.enovasantebackend.repository.CategorieDocumentRepository;
+import com.enova.enovasantebackend.dto.CategorieDocumentRequestDTO;
 import com.enova.enovasantebackend.service.CategorieDocumentService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,8 +19,8 @@ public class EnovaSanteBackendApplication {
     @Bean
     CommandLineRunner start(CategorieDocumentService service) {
         return args -> {
-            DTOCategorieDocumentRequest save = DTOCategorieDocumentRequest.builder()
-                    .code("code test")
+            CategorieDocumentRequestDTO save = CategorieDocumentRequestDTO.builder()
+                    .code("test")
                     .description("description test")
                     .ordre(5)
                     .actif(false)
@@ -36,6 +34,7 @@ public class EnovaSanteBackendApplication {
             String id = sc.nextLine();
             System.out.println("Entered ID: " + id);
             service.delete(id);
+            System.out.println(service.getCategorieByCode("test"));
         };
     }
 }

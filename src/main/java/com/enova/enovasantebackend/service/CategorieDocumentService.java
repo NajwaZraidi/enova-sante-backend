@@ -1,26 +1,40 @@
 package com.enova.enovasantebackend.service;
 
-import com.enova.enovasantebackend.domain.CategorieDocument;
-import com.enova.enovasantebackend.dto.DTOCategorieDocumentRequest;
-import com.enova.enovasantebackend.dto.DTOCategorieDocumentResponse;
+import com.enova.enovasantebackend.enums.GlobalOperator;
+import com.enova.enovasantebackend.repository.criteria.PageRequestDTO;
+import com.enova.enovasantebackend.repository.criteria.SearchCriteriaDTO;
+import com.enova.enovasantebackend.dto.CategorieDocumentRequestDTO;
+import com.enova.enovasantebackend.dto.CategorieDocumentResponseDTO;
 import com.enova.enovasantebackend.exception.CategorieDocumentNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface CategorieDocumentService {
     // Get all entities 'CategorieDocument'
-    List<DTOCategorieDocumentResponse> getAll();
+    List<CategorieDocumentResponseDTO> getAll();
 
     // Get entity 'CategorieDocument' by id
-    DTOCategorieDocumentResponse getById(String id) throws CategorieDocumentNotFoundException;
+    CategorieDocumentResponseDTO getById(String id) throws CategorieDocumentNotFoundException;
 
     // Save a new entity 'CategorieDocument'
-    DTOCategorieDocumentResponse save(DTOCategorieDocumentRequest request);
+    CategorieDocumentResponseDTO save(CategorieDocumentRequestDTO request);
 
     // Update an existing entity 'CategorieDocument'
-    DTOCategorieDocumentResponse update(DTOCategorieDocumentRequest request, String id);
+    CategorieDocumentResponseDTO update(CategorieDocumentRequestDTO request, String id);
+
+    //Page<DTOCategorieDocumentResponse> getallPage(DTOCategorieDocumentRequest request);
 
     // Remove an entity 'CategorieDocument'
     void delete(String id);
+
+    Page<CategorieDocumentResponseDTO> getAllDocumentCategorie(PageRequestDTO pageRequestDTO);
+
+    //Query Model
+    CategorieDocumentResponseDTO getCategorieByCode(String code);
+
+    //specifications && pagination
+    Page<CategorieDocumentResponseDTO> getCategoriesByCriteria(List<SearchCriteriaDTO> searchCriteriaDTO, GlobalOperator operator,PageRequestDTO requestDTO);
+
+
 }
