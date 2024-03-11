@@ -3,6 +3,17 @@ package com.enova.enovasantebackend.controller;
 import com.enova.enovasantebackend.domain.CategorieDocument;
 import com.enova.enovasantebackend.dto.CategorieDocumentRequestDTO;
 import com.enova.enovasantebackend.dto.CategorieDocumentResponseDTO;
+
+import com.enova.enovasantebackend.repository.criteria.PageRequestCriteria;
+import com.enova.enovasantebackend.repository.criteria.CategorieDocumentRequestCriteria;
+import com.enova.enovasantebackend.enums.CriteriaConcatOperator;
+import com.enova.enovasantebackend.exception.CategorieDocumentNotFoundException;
+import com.enova.enovasantebackend.repository.specification.FilterSpecificationService;
+import com.enova.enovasantebackend.service.CategorieDocumentService;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
+
 import com.enova.enovasantebackend.enums.GlobalOperator;
 import com.enova.enovasantebackend.repository.criteria.CriteriaDTO;
 import com.enova.enovasantebackend.repository.criteria.PageRequestDTO;
@@ -16,11 +27,13 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/categorie-document")
@@ -28,12 +41,20 @@ import java.util.List;
 @CrossOrigin("*")
 public class CategorieDocumentController {
     CategorieDocumentService categorieDocumentService;
+    FilterSpecificationService<CategorieDocument> filterSpecificationService;
 
     // Get all entities 'CategorieDocument'
     @GetMapping("all")
     public ResponseEntity<List<CategorieDocumentResponseDTO>> getAll() {
         return ResponseEntity.ok(categorieDocumentService.getAll());
     }
+
+
+    // Get all entities 'CategorieDocument' by page
+    @GetMapping("getPage")
+    public ResponseEntity<Page<CategorieDocumentResponseDTO>> getPage(@RequestBody(required = false) PageRequestCriteria pageRequestCriteria) {
+        PageRequestCriteria request = Objects.nonNull(pageRequestCriteria) ? pageRequestCriteria : new PageRequestCriteria();
+        return ResponseEntity.ok(categorieDocumentService.getPage(request.getPageable()));
 
     @PostMapping("page")
     public ResponseEntity<Page<CategorieDocumentResponseDTO>> getAllCategoriesPaginitation(@RequestBody PageRequestDTO pageRequestDTO) {
@@ -44,6 +65,18 @@ public class CategorieDocumentController {
     @GetMapping("by-id/{id}")
     public ResponseEntity<CategorieDocumentResponseDTO> getById(@PathVariable String id) throws CategorieDocumentNotFoundException {
         return ResponseEntity.ok(categorieDocumentService.getById(id));
+    }
+
+    // Get by specifications
+    @PostMapping("specifications")
+    public ResponseEntity<Page<CategorieDocument>> getBySpecifications(
+            @RequestBody CategorieDocumentRequestCriteria requestCriteria,
+            @RequestParam(defaultValue = "AND") String concatOperator
+    ) {
+        CriteriaConcatOperator criteriaConcatOperator = CriteriaConcatOperator.valueOf(concatOperator.toUpperCase());
+        Specification<CategorieDocument> searchSpecification = filterSpecificationService.getSearchSpecification(requestCriteria.getSearchCriteriaList(), criteriaConcatOperator);
+        Page<CategorieDocument> result = categorieDocumentService.getBySpecification(searchSpecification, requestCriteria.getPageRequestCriteria().getPageable());
+        return ResponseEntity.ok(result);
     }
 
     // Save a new entity 'CategorieDocument'
@@ -65,13 +98,16 @@ public class CategorieDocumentController {
         return ResponseEntity.ok().build();
     }
 
+
+    // Find by code
     @GetMapping("by-code/{code}")
-    public ResponseEntity<CategorieDocumentResponseDTO> getCategorieByCode(@PathVariable String code) throws CategorieDocumentNotFoundException {
-        return ResponseEntity.ok(categorieDocumentService.getCategorieByCode(code));
+    public ResponseEntity<List<CategorieDocumentResponseDTO>> getByCode(@PathVariable String code) {
+        return ResponseEntity.ok(categorieDocumentService.getByCode(code));
     }
 
-    CategorieDocumentRepository repository;
-    @PostMapping("specifications")
+
+   
+    @PostMapping("GetSpecifications")
     public ResponseEntity<Page<CategorieDocumentResponseDTO>> getCategories(@RequestBody(required = false) CriteriaDTO criteriaDTO){
         if(criteriaDTO==null){
              criteriaDTO=new CriteriaDTO();

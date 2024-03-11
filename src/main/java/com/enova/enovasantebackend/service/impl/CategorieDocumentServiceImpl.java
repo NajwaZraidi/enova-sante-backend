@@ -61,6 +61,21 @@ public class CategorieDocumentServiceImpl implements CategorieDocumentService {
     }
 
     @Override
+
+    public List<CategorieDocumentResponseDTO> getByCode(String code) {
+        return categorieDocumentRepository.findCategorieDocumentsByCode(code).stream().map(categorieDocumentMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<CategorieDocument> getBySpecification(Specification<CategorieDocument> specification, Pageable pageable) {
+        return categorieDocumentRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<CategorieDocumentResponseDTO> getPage(Pageable page) {
+        return categorieDocumentRepository.findAll(page).map(categorieDocumentMapper::toResponse);
+    }
+
     public Page<CategorieDocumentResponseDTO> getAllDocumentCategorie(PageRequestDTO pageRequestDTO) {
         Pageable pageable= new PageRequestDTO().getPageable(pageRequestDTO);
         return categorieDocumentRepository.findAll(pageable).map(categorieDocumentMapper::toResponse);
@@ -79,6 +94,7 @@ public class CategorieDocumentServiceImpl implements CategorieDocumentService {
         Pageable pageable = new PageRequestDTO().getPageable(pageRequestDTO);
         return categorieDocumentRepository.findAll(specification,pageable).map(categorieDocumentMapper::toResponse);
     }
+
 
 
 }
