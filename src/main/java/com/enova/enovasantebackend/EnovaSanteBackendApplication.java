@@ -23,7 +23,7 @@ public class EnovaSanteBackendApplication {
                     .code("test")
                     .description("description test")
                     .ordre(5)
-                    .actif(false)
+                    .actif(true)
                     .hl7("hl7 test")
                     .libelle("Libelle test")
                     .build();
