@@ -34,7 +34,6 @@ public class EnovaSanteBackendApplication {
             String id = sc.nextLine();
             System.out.println("Entered ID: " + id);
             service.delete(id);
-            System.out.println(service.getCategorieByCode("test"));
         };
     }
 }
