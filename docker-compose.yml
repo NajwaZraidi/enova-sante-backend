@@ -1,0 +1,6 @@
+version: "1"
+services:
+  springboot-app:
+    image: enova-sante-backend
+    ports:
+      - 8089:8089
